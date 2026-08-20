@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a session with Tom</title>
+<meta name="description" content="Request a one-on-one session with Tom Aldred. No app needed: tell him where you're at and what you want to work on, and he'll come back to you to lock in a time.">
+<!--
+  DRAFT ONLY. The request form is front-end only until a receiving inbox is
+  decided; submissions do not go anywhere yet.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #101214;
+    --bg-glow-1: #181D21;
+    --bg-glow-2: #131A1E;
+    --panel: #171B1E;
+    --line: #272E33;
+    --accent: #C4552F;
+    --accent-bright: #D96A42;
+    --text: #EEECE6;
+    --muted: #9AA0A3;
+    --r-media: 6px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background:
+      radial-gradient(1100px 700px at 85% -10%, var(--bg-glow-1), transparent 60%),
+      radial-gradient(900px 700px at -15% 35%, var(--bg-glow-2), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 16px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  .grain {
+    position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  ::selection { background: var(--accent); color: var(--text); }
+
+  .nav {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(16,18,20,0.86);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { height: 68px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: 900; font-style: italic; font-size: 21px; letter-spacing: -0.5px; text-decoration: none; font-stretch: 110%; }
+  .logo b { color: var(--accent-bright); font-weight: 900; }
+  .back { text-decoration: none; font-size: 14px; font-weight: 600; color: var(--muted); transition: color 0.15s; }
+  .back:hover { color: var(--text); }
+
+  .page { padding: 64px 0 96px; }
+  .page-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 64px; align-items: start; }
+  h1 {
+    font-size: clamp(40px, 6vw, 72px); font-weight: 900; font-stretch: 115%;
+    line-height: 0.95; letter-spacing: -0.02em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  h1 .acc { color: var(--accent-bright); }
+  .lede { color: var(--muted); font-size: 17px; line-height: 1.7; margin-bottom: 14px; max-width: 46ch; }
+  .lede b { color: var(--text); font-weight: 700; }
+
+  .steps { margin-top: 34px; }
+  .step { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 18px 0; align-items: start; }
+  .step + .step { border-top: 1px solid var(--line); }
+  .step .dotnum {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--panel);
+    border: 1px solid var(--line); color: var(--accent-bright);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px;
+  }
+  .step h3 { font-size: 16px; font-weight: 800; text-transform: uppercase; font-stretch: 108%; }
+  .step p { color: var(--muted); font-size: 14.5px; margin-top: 3px; line-height: 1.6; }
+
+  .book-form { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-media); padding: 34px; }
+  .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .field label { font-size: 13px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text); }
+  .field input, .field select, .field textarea {
+    font-family: inherit; font-size: 16px; color: var(--text);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 13px 14px; width: 100%;
+    transition: border-color 0.15s;
+  }
+  .field textarea { min-height: 120px; resize: vertical; }
+  .field input::placeholder, .field textarea::placeholder { color: #6E767A; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--accent-bright); }
+  .field .err { display: none; font-size: 13px; color: #E08E75; }
+  .field.invalid input, .field.invalid textarea { border-color: #A85B41; }
+  .field.invalid .err { display: block; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .submit {
+    font-family: inherit; cursor: pointer; border: 0; width: 100%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--accent); color: var(--text); font-weight: 700; font-size: 15px;
+    padding: 15px 26px; border-radius: 99px;
+    transition: transform 0.15s, background 0.15s;
+  }
+  .submit:hover { transform: translateY(-2px); background: var(--accent-bright); }
+  .submit:active { transform: scale(0.98); }
+  .submit:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
+  .privacy-line { font-size: 13px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
+
+  /* follow-up / success state */
+  .followup { display: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-media); padding: 38px 34px; }
+  .followup .tick {
+    width: 52px; height: 52px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 900; margin-bottom: 20px;
+  }
+  .followup h2 { font-size: 30px; font-weight: 900; font-stretch: 112%; text-transform: uppercase; margin-bottom: 12px; }
+  .followup > p { color: var(--muted); font-size: 16px; line-height: 1.7; margin-bottom: 22px; }
+  .followup > p b { color: var(--text); font-weight: 700; }
+  .prep { border-top: 1px solid var(--line); padding-top: 20px; }
+  .prep h3 { font-size: 13px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--accent-bright); margin-bottom: 12px; }
+  .prep ul { list-style: none; }
+  .prep li { color: var(--muted); font-size: 15px; line-height: 1.6; padding: 7px 0 7px 26px; position: relative; }
+  .prep li::before { content: "✓"; position: absolute; left: 0; color: var(--accent-bright); font-weight: 900; }
+  .followup .home-link { display: inline-block; margin-top: 24px; text-decoration: none; font-weight: 700; font-size: 14px; color: var(--accent-bright); }
+  .followup .home-link:hover { color: var(--text); }
+
+  @media (max-width: 900px) {
+    .page { padding: 44px 0 72px; }
+    .page-grid { grid-template-columns: 1fr; gap: 40px; }
+    .book-form, .followup { padding: 26px 22px; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="index.html">BOOT<b>UP</b></a>
+    <a class="back" href="index.html">&larr; Back to Boot Up</a>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="wrap page-grid">
+    <div>
+      <h1>Book your <span class="acc">one-on-one</span></h1>
+      <p class="lede">No app, no account. Send Tom the picture of where you're at and he'll come back to you <b>by email within 48 hours</b> to lock in a time.</p>
+      <p class="lede">The more specific you are, the better the session.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="dotnum">1</div>
+          <div><h3>Send the request</h3><p>Two minutes. Who you are, where you play, what you want out of it.</p></div>
+        </div>
+        <div class="step">
+          <div class="dotnum">2</div>
+          <div><h3>Tom replies</h3><p>Within 48 hours, with times that work and anything he needs from you first.</p></div>
+        </div>
+        <div class="step">
+          <div class="dotnum">3</div>
+          <div><h3>Do the session</h3><p>Video call or in person where it works. You leave with a plan, not just a chat.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <form class="book-form" id="book-form" novalidate>
+        <div class="two-col">
+          <div class="field" id="f-name">
+            <label for="b-name">Name</label>
+            <input id="b-name" name="name" type="text" autocomplete="name" placeholder="Your name">
+            <span class="err">Add your name so Tom knows who's asking.</span>
+          </div>
+          <div class="field" id="f-email">
+            <label for="b-email">Email</label>
+            <input id="b-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+            <span class="err">Add an email so Tom can reply.</span>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="b-phone">Phone <span style="color:var(--muted); text-transform:none; letter-spacing:0;">(optional)</span></label>
+            <input id="b-phone" name="phone" type="tel" autocomplete="tel" placeholder="04xx xxx xxx">
+          </div>
+          <div class="field">
+            <label for="b-level">Where you're at</label>
+            <select id="b-level" name="level">
+              <option>Grassroots / club</option>
+              <option>Academy / rep</option>
+              <option>Semi-professional</option>
+              <option>Professional</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="b-position">Position</label>
+          <input id="b-position" name="position" type="text" placeholder="e.g. centre-back, winger, keeper">
+        </div>
+        <div class="field" id="f-topic">
+          <label for="b-topic">What do you want to work on?</label>
+          <textarea id="b-topic" name="topic" placeholder="What's going well, what isn't, and what you want out of the session. Got a match clip? Mention it here."></textarea>
+          <span class="err">Give Tom one line on what the session is for.</span>
+        </div>
+        <button class="submit" type="submit">Request a session</button>
+        <p class="privacy-line">Your details go to Tom only, and only to organise your session.</p>
+      </form>
+
+      <div class="followup" id="followup">
+        <div class="tick">✓</div>
+        <h2>Request received</h2>
+        <p>Tom will reply <b>by email within 48 hours</b> with times that work. If you added a phone number, he may text instead: watch both.</p>
+        <div class="prep">
+          <h3>While you wait</h3>
+          <ul>
+            <li>Dig out a recent match clip if you have one: even phone footage from the sideline helps.</li>
+            <li>Write down the one thing you'd fix about your game if you could.</li>
+            <li>Check your spam folder if nothing lands within 48 hours.</li>
+          </ul>
+        </div>
+        <a class="home-link" href="index.html">&larr; Back to Boot Up</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const form = document.getElementById('book-form');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let ok = true;
+    [['f-name','b-name'],['f-email','b-email'],['f-topic','b-topic']].forEach(([f,i]) => {
+      const field = document.getElementById(f), input = document.getElementById(i);
+      const bad = !input.value.trim() || (i === 'b-email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value));
+      field.classList.toggle('invalid', bad);
+      if (bad) ok = false;
+    });
+    if (!ok) return;
+    form.style.display = 'none';
+    const fu = document.getElementById('followup');
+    fu.style.display = 'block';
+    fu.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
+
+</body>
+</html>
