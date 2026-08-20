@@ -175,6 +175,40 @@
     .cell.tint, .cell.accent { min-height: 165px; }
   }
 
+
+  /* ---------- debrief tabs ---------- */
+  .debrief { border-top: 1px solid var(--line); padding: 80px 0 96px; }
+  .debrief h2 {
+    font-size: clamp(30px, 4vw, 46px); font-weight: 900; font-stretch: 110%;
+    text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 32px;
+  }
+  .tabbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .tabbar button {
+    font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    color: var(--muted); background: transparent; border: 1px solid var(--line);
+    padding: 10px 18px; border-radius: 99px;
+    transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .tabbar button:hover { color: var(--text); border-color: var(--muted); }
+  .tabbar button:active { transform: scale(0.97); }
+  .tabbar button.active { background: var(--accent); border-color: var(--accent); color: var(--text); }
+  .tabbar button:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
+  .tabpanel { display: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-media); padding: 34px; }
+  .tabpanel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; animation: tabfade 0.25s ease; }
+  @keyframes tabfade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .tabpanel h4 {
+    font-size: 13px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--accent-bright); margin-bottom: 10px;
+  }
+  .tabpanel p { color: var(--muted); font-size: 16px; line-height: 1.7; }
+  .tabpanel p b { color: var(--text); font-weight: 700; }
+  @media (max-width: 720px) {
+    .tabbar { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 6px; }
+    .tabbar button { white-space: nowrap; }
+    .tabpanel.active { grid-template-columns: 1fr; gap: 22px; padding: 26px 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tabpanel.active { animation: none; } }
+
   /* ---------- one-on-one spotlight ---------- */
   .oneone { border-top: 1px solid var(--line); padding: 88px 0; }
   .oneone-inner { max-width: 720px; }
@@ -330,6 +364,51 @@
   </div>
 </section>
 
+
+<!-- DEBRIEF : tab per offering -->
+<section class="debrief" id="debrief">
+  <div class="wrap">
+    <h2 class="reveal">The program, up close</h2>
+    <div class="tabbar reveal">
+      <button class="active" data-tab="gym">Tailored gym sessions</button>
+      <button class="" data-tab="nutrition">Nutrition plans</button>
+      <button class="" data-tab="drills">Training drills</button>
+      <button class="" data-tab="podcasts">Mindset podcasts</button>
+      <button class="" data-tab="recovery">Recovery</button>
+      <button class="" data-tab="mentoring">Mentoring</button>
+      <button class="" data-tab="oneone">One-on-one sessions</button>
+    </div>
+    <div class="tabpanel active" id="tab-gym">
+      <div><h4>What it does</h4><p>Strength and conditioning programmed to your position, your level and the gear you've got, and periodised across the football calendar so pre-season, in-season and off-season each ask something different of you.</p></div>
+      <div><h4>How it helps you</h4><p>You get <b>stronger in the duels and harder to knock off the ball</b> without cooking your legs before match day. The plan does the thinking; you just turn up and do the work.</p></div>
+    </div>
+    <div class="tabpanel " id="tab-nutrition">
+      <div><h4>What it does</h4><p>Match-day fuelling, recovery meals and week-round eating built around your training load. What to eat before a 9am kick-off, after a night session, and on the days in between.</p></div>
+      <div><h4>How it helps you</h4><p>You <b>turn up fuelled and recover faster</b>, and you manage your weight without guesswork or fad diets. Food becomes part of the program instead of the thing that undoes it.</p></div>
+    </div>
+    <div class="tabpanel " id="tab-drills">
+      <div><h4>What it does</h4><p>Position-specific ball work you can run alone. One ball, a wall or a patch of grass, clear reps and progressions, no teammates required.</p></div>
+      <div><h4>How it helps you</h4><p>Your <b>first touch and decisions hold up under fatigue</b>, because you've done the reps when nobody was watching. Extras stop being random and start compounding.</p></div>
+    </div>
+    <div class="tabpanel " id="tab-podcasts">
+      <div><h4>What it does</h4><p>Tom and guests talking honestly about pressure, form, setbacks and what it takes to last 18 seasons: dropped weeks, moves, injuries, the lot.</p></div>
+      <div><h4>How it helps you</h4><p>When you're <b>out of the side, out of form or doubting it</b>, you hear how people who lived it got through, instead of guessing alone.</p></div>
+    </div>
+    <div class="tabpanel " id="tab-recovery">
+      <div><h4>What it does</h4><p>Sleep, day-after protocols and structured return-to-play progressions for the injuries footballers actually get: hamstring, groin, ankle, ACL.</p></div>
+      <div><h4>How it helps you</h4><p>You <b>back up games without carrying fatigue into the next one</b>, and if you do get injured, you come back properly instead of re-doing it six weeks later.</p></div>
+    </div>
+    <div class="tabpanel " id="tab-mentoring">
+      <div><h4>What it does</h4><p>Ongoing guidance from a professional who has been where you're trying to go. Regular check-ins on your development, not a one-off pep talk.</p></div>
+      <div><h4>How it helps you</h4><p>You get <b>someone in your corner</b> for trials, club moves and the decisions nobody teaches you: an experienced read on your situation when it matters.</p></div>
+    </div>
+    <div class="tabpanel " id="tab-oneone">
+      <div><h4>What it does</h4><p>Book time with Tom directly. Bring a match clip, a setback, a contract decision or a pre-season you're dreading, and work through it together.</p></div>
+      <div><h4>How it helps you</h4><p>You get <b>direct, honest feedback on your actual game</b>, and a plan that changes as you do. The fastest way to find out what to fix next.</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- ONE-ON-ONE SPOTLIGHT : split -->
 <section class="oneone">
   <div class="wrap oneone-inner">
@@ -400,6 +479,14 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.querySelectorAll('.tabbar button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.tabbar button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tabpanel').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-' + b.dataset.tab).classList.add('active');
+  });
+
 </script>
 
 
