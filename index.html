@@ -221,6 +221,43 @@
   .oneone p b { color: var(--text); font-weight: 700; }
   .oneone .store-btn { margin-top: 10px; }
 
+
+  /* ---------- booking ---------- */
+  .book { border-top: 1px solid var(--line); padding: 88px 0; }
+  .book-grid { display: grid; grid-template-columns: 5fr 6fr; gap: 64px; align-items: start; }
+  .book h2 {
+    font-size: clamp(32px, 4vw, 48px); font-weight: 900; font-stretch: 110%;
+    text-transform: uppercase; line-height: 1.02; margin-bottom: 20px;
+  }
+  .book h2 .acc { color: var(--accent-bright); }
+  .book-copy p { color: var(--muted); font-size: 17px; line-height: 1.7; margin-bottom: 16px; max-width: 46ch; }
+  .book-copy p b { color: var(--text); font-weight: 700; }
+  .book-form { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-media); padding: 34px; }
+  .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .field label { font-size: 13px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text); }
+  .field input, .field select, .field textarea {
+    font-family: inherit; font-size: 16px; color: var(--text);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 13px 14px; width: 100%;
+    transition: border-color 0.15s;
+  }
+  .field textarea { min-height: 110px; resize: vertical; }
+  .field input::placeholder, .field textarea::placeholder { color: #6E767A; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--accent-bright);
+  }
+  .field .err { display: none; font-size: 13px; color: #E08E75; }
+  .field.invalid input, .field.invalid textarea { border-color: #A85B41; }
+  .field.invalid .err { display: block; }
+  .book-form .store-btn { border: 0; width: 100%; justify-content: center; cursor: pointer; }
+  .book-success { display: none; text-align: left; padding: 12px 0; }
+  .book-success h3 { font-size: 24px; font-weight: 900; font-stretch: 110%; text-transform: uppercase; margin-bottom: 10px; }
+  .book-success p { color: var(--muted); font-size: 16px; line-height: 1.7; }
+  @media (max-width: 900px) {
+    .book-grid { grid-template-columns: 1fr; gap: 36px; }
+    .book-form { padding: 26px 22px; }
+  }
+
   /* ---------- tom band ---------- */
   .tom { border-top: 1px solid var(--line); }
   .tom-media { aspect-ratio: 21 / 9; border-radius: 0; }
@@ -415,7 +452,50 @@
     <h2 class="reveal">Direct access, <span class="acc">not just an app</span></h2>
     <p class="reveal">Boot Up isn't a video library you scroll and forget. Mentoring runs through the program: <b>one-on-one sessions with Tom</b>, honest feedback on where your game is, and a plan that changes as you do.</p>
     <p class="reveal">Bring a match clip, a setback, a contract decision or a pre-season you're dreading. That's the work.</p>
-    <a class="store-btn primary reveal" href="#download" style="margin-top:10px; display:inline-flex;">Book a session</a>
+    <a class="store-btn primary reveal" href="#book" style="margin-top:10px; display:inline-flex;">Book a session</a>
+  </div>
+</section>
+
+
+<!-- BOOKING : no app required -->
+<section class="book" id="book">
+  <div class="wrap book-grid">
+    <div class="book-copy">
+      <h2 class="reveal">Book a session, <span class="acc">no app needed</span></h2>
+      <p class="reveal">One-on-ones with Tom aren't locked behind a download. Send a request here and he'll come back to you directly to lock in a time.</p>
+      <p class="reveal">Tell him what you want to work on: <b>a match clip, a setback, a trial coming up, a pre-season plan</b>. The more specific, the better the session.</p>
+    </div>
+    <form class="book-form reveal" id="book-form" novalidate>
+      <div class="field" id="f-name">
+        <label for="b-name">Name</label>
+        <input id="b-name" name="name" type="text" autocomplete="name" placeholder="Your name">
+        <span class="err">Add your name so Tom knows who's asking.</span>
+      </div>
+      <div class="field" id="f-email">
+        <label for="b-email">Email</label>
+        <input id="b-email" name="email" type="email" autocomplete="email" placeholder="you@example.com">
+        <span class="err">Add an email so Tom can reply.</span>
+      </div>
+      <div class="field">
+        <label for="b-level">Where you're at</label>
+        <select id="b-level" name="level">
+          <option>Grassroots / club</option>
+          <option>Academy / rep</option>
+          <option>Semi-professional</option>
+          <option>Professional</option>
+        </select>
+      </div>
+      <div class="field" id="f-topic">
+        <label for="b-topic">What do you want to work on?</label>
+        <textarea id="b-topic" name="topic" placeholder="Position, what's going well, what isn't, and what you want out of the session"></textarea>
+        <span class="err">Give Tom one line on what the session is for.</span>
+      </div>
+      <button class="store-btn primary" type="submit">Request a session</button>
+    </form>
+    <div class="book-success" id="book-success">
+      <h3>Request received</h3>
+      <p>Tom will come back to you by email to lock in a time. Keep an eye on your inbox, and have that match clip ready.</p>
+    </div>
   </div>
 </section>
 
@@ -479,6 +559,22 @@
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+
+  const bookForm = document.getElementById('book-form');
+  if (bookForm) bookForm.addEventListener('submit', e => {
+    e.preventDefault();
+    let ok = true;
+    [['f-name','b-name'],['f-email','b-email'],['f-topic','b-topic']].forEach(([f,i]) => {
+      const field = document.getElementById(f), input = document.getElementById(i);
+      const bad = !input.value.trim() || (i === 'b-email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value));
+      field.classList.toggle('invalid', bad);
+      if (bad) ok = false;
+    });
+    if (!ok) return;
+    bookForm.style.display = 'none';
+    document.getElementById('book-success').style.display = 'block';
+  });
 
   document.querySelectorAll('.tabbar button').forEach(b => b.onclick = () => {
     document.querySelectorAll('.tabbar button').forEach(x => x.classList.remove('active'));
